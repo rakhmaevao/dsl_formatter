@@ -41,7 +41,7 @@ from src.domain.module import C4Container, C4Module, DslInstruction
                         technology=None,
                         tags=["middleware"],
                         children=[
-                            DslInstruction(id="docs", argument="docs"),
+                            DslInstruction(id="!docs", argument="docs"),
                         ],
                     )
                 ]

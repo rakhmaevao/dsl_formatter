@@ -1,5 +1,5 @@
 from .module import C4Container, C4Module, DslInstruction
-from pyparsing import Word, ZeroOrMore, alphas, Suppress, Optional
+from pyparsing import Combine, Word, ZeroOrMore, alphas, Suppress, Optional
 from loguru import logger
 
 _entity_id_pe = Word(alphas + "_")
@@ -7,7 +7,7 @@ _entity_type_pe = Word(alphas + "_")
 _entity_name_pe = Word(alphas + "_")
 
 _tags_pe = "tags" + Suppress('"') + Word(alphas + "_" + ",") + Suppress('"')
-_instruction_pe = Suppress("!") + Word(alphas) + Word(alphas)
+_instruction_pe = Combine("!" + Word(alphas)) + Word(alphas)
 _children_pe = Optional(_tags_pe) & Optional(_instruction_pe)
 
 _full_entity_description_pe = (
@@ -41,7 +41,7 @@ class DslParser:
             if child_part == "tags":
                 tags = raw_parsing[3 + i + 1]
                 skip_next = True
-            elif child_part == "docs":
+            elif child_part.startswith("!"):
                 children.append(
                     DslInstruction(id=child_part, argument=raw_parsing[3 + i + 1])
                 )
