@@ -8,10 +8,10 @@ from src.domain.tree.module import C4Container, C4Module
     [
         (
             """
-filesystem = container "filesystem" {
-    tags "middleware"
-}
-""",
+            filesystem = container "filesystem" {
+                tags "middleware"
+            }
+            """,
             C4Module(
                 body=[
                     C4Container(
@@ -19,7 +19,7 @@ filesystem = container "filesystem" {
                         name="filesystem",
                         description=None,
                         technology=None,
-                        tags=[],
+                        tags=["middleware"],
                         children=[],
                     )
                 ]

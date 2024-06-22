@@ -8,11 +8,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 pyparsing = "^3.1.2"
+loguru = "^0.7.2"
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
 ruff = "^0.4.10"
+pytest-clarity = "^1.0.1"
 
 [build-system]
 requires = ["poetry-core"]
