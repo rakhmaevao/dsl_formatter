@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class Node:
     pass
 
+
 @dataclass
 class C4Module:
     body: list[Node]
+
 
 @dataclass
 class C4Container(Node):

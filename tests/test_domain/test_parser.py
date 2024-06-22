@@ -8,4 +8,15 @@ filesystem = container "filesystem" {
     tags "middleware"
 }
 """
-    assert DslParser()(code) == C4Module(body=[C4Container(id='filesystem', name='filesystem', description=None, technology=None, tags=[], children=[])])
+    assert DslParser()(code) == C4Module(
+        body=[
+            C4Container(
+                id="filesystem",
+                name="filesystem",
+                description=None,
+                technology=None,
+                tags=[],
+                children=[],
+            )
+        ]
+    )
