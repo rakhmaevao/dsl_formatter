@@ -1,4 +1,4 @@
-from .tree.module import C4Container, C4Module
+from .module import C4Container, C4Module
 from pyparsing import Word, ZeroOrMore, alphas, Suppress, Optional
 from loguru import logger
 

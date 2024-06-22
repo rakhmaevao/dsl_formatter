@@ -1,6 +1,6 @@
 import pytest
 from src.domain.parser import DslParser
-from src.domain.tree.module import C4Container, C4Module
+from src.domain.module import C4Container, C4Module
 
 
 @pytest.mark.parametrize(
