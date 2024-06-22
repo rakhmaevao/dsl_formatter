@@ -1,11 +1,15 @@
-from .module import C4Container, C4Module
+from .module import C4Container, C4Module, DslInstruction
 from pyparsing import Word, ZeroOrMore, alphas, Suppress, Optional
 from loguru import logger
 
 _entity_id_pe = Word(alphas + "_")
 _entity_type_pe = Word(alphas + "_")
 _entity_name_pe = Word(alphas + "_")
-_tags_instruction_pe = "tags" + Suppress('"') + Word(alphas + "_" + ",") + Suppress('"')
+
+_tags_pe = "tags" + Suppress('"') + Word(alphas + "_" + ",") + Suppress('"')
+_instruction_pe = Suppress("!") + Word(alphas) + Word(alphas)
+_children_pe = Optional(_tags_pe) & Optional(_instruction_pe)
+
 _full_entity_description_pe = (
     _entity_id_pe
     + Suppress("=")
@@ -14,7 +18,7 @@ _full_entity_description_pe = (
     + _entity_name_pe
     + Suppress('"')
     + Suppress("{")
-    + Optional(_tags_instruction_pe)
+    + _children_pe
     + Suppress("}")
 )
 
@@ -28,9 +32,20 @@ class DslParser:
         entity_name = raw_parsing[2]
         logger.debug(f"{raw_parsing=}")
         tags = ""
-        for i, optional_part in enumerate(raw_parsing[3:]):
-            if optional_part == "tags":
+        children = []
+        skip_next = False
+        for i, child_part in enumerate(raw_parsing[3:]):
+            if skip_next:
+                skip_next = False
+                continue
+            if child_part == "tags":
                 tags = raw_parsing[3 + i + 1]
+                skip_next = True
+            elif child_part == "docs":
+                children.append(
+                    DslInstruction(id=child_part, argument=raw_parsing[3 + i + 1])
+                )
+                skip_next = True
 
         match entity_type:
             case "container":
@@ -41,7 +56,7 @@ class DslParser:
                         description=None,
                         technology=None,
                         tags=[tags],
-                        children=[],
+                        children=children,
                     )
                 )
             case _:

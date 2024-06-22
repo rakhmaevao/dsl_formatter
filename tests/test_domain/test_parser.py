@@ -1,6 +1,6 @@
 import pytest
 from src.domain.parser import DslParser
-from src.domain.module import C4Container, C4Module
+from src.domain.module import C4Container, C4Module, DslInstruction
 
 
 @pytest.mark.parametrize(
@@ -21,6 +21,28 @@ from src.domain.module import C4Container, C4Module
                         technology=None,
                         tags=["middleware"],
                         children=[],
+                    )
+                ]
+            ),
+        ),
+        (
+            """
+            filesystem = container "filesystem" {
+                tags "middleware"
+                !docs docs
+            }
+            """,
+            C4Module(
+                body=[
+                    C4Container(
+                        id="filesystem",
+                        name="filesystem",
+                        description=None,
+                        technology=None,
+                        tags=["middleware"],
+                        children=[
+                            DslInstruction(id="docs", argument="docs"),
+                        ],
                     )
                 ]
             ),

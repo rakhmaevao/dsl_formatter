@@ -22,7 +22,7 @@ from src.domain.module import C4Container, C4Module
             ),
             """filesystem = container "filesystem" {
     tags "middleware"
-}"""
+}""",
         ),
     ],
 )
