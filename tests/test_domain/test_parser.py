@@ -19,7 +19,7 @@ from src.domain.module import C4Container, C4Module, DslInstruction
                         name="filesystem",
                         description=None,
                         technology=None,
-                        tags=["middleware"],
+                        tags=['"middleware"'],
                         children=[],
                     )
                 ]
@@ -39,7 +39,7 @@ from src.domain.module import C4Container, C4Module, DslInstruction
                         name="filesystem",
                         description=None,
                         technology=None,
-                        tags=["middleware"],
+                        tags=['"middleware"'],
                         children=[
                             DslInstruction(id="!docs", argument="docs"),
                         ],
@@ -62,9 +62,10 @@ from src.domain.module import C4Container, C4Module, DslInstruction
                         name="filesystem",
                         description=None,
                         technology=None,
-                        tags=["middleware"],
+                        tags=['"middleware"'],
                         children=[
                             DslInstruction(id="!docs", argument="docs"),
+                            DslInstruction(id='!ards', argument='ards')
                         ],
                     )
                 ]
