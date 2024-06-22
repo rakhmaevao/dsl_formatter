@@ -47,6 +47,29 @@ from src.domain.module import C4Container, C4Module, DslInstruction
                 ]
             ),
         ),
+        (
+            """
+            filesystem = container "filesystem" {
+                tags "middleware"
+                !docs docs
+                !ards ards
+            }
+            """,
+            C4Module(
+                body=[
+                    C4Container(
+                        id="filesystem",
+                        name="filesystem",
+                        description=None,
+                        technology=None,
+                        tags=["middleware"],
+                        children=[
+                            DslInstruction(id="!docs", argument="docs"),
+                        ],
+                    )
+                ]
+            ),
+        ),
     ],
 )
 def test_parse_models(code, expected) -> None:

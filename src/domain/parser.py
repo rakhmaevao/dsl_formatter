@@ -1,5 +1,5 @@
 from .module import C4Container, C4Module, DslInstruction
-from pyparsing import Combine, Word, ZeroOrMore, alphas, Suppress, Optional
+from pyparsing import Combine, White, Word, ZeroOrMore, alphas, Suppress, Optional, c_style_comment, nested_expr, quoted_string
 from loguru import logger
 
 _entity_id_pe = Word(alphas + "_")
@@ -8,7 +8,9 @@ _entity_name_pe = Word(alphas + "_")
 
 _tags_pe = "tags" + Suppress('"') + Word(alphas + "_" + ",") + Suppress('"')
 _instruction_pe = Combine("!" + Word(alphas)) + Word(alphas)
-_children_pe = Optional(_tags_pe) & Optional(_instruction_pe)
+# _children_pe = Optional(_tags_pe) & Optional(_instruction_pe)
+
+_children_pe = nested_expr('{', '}', ignore_expr=(quoted_string | c_style_comment))
 
 _full_entity_description_pe = (
     _entity_id_pe
@@ -17,9 +19,7 @@ _full_entity_description_pe = (
     + Suppress('"')
     + _entity_name_pe
     + Suppress('"')
-    + Suppress("{")
     + _children_pe
-    + Suppress("}")
 )
 
 
