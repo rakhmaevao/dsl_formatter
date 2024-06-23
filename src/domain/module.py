@@ -14,7 +14,7 @@ class C4Node:
     name: str
     description: str | None
     technology: str | None
-    tags: str
+    tags: list[str]
     children: list[C4Node | DslInstruction]
     type: str = "unknown"
 
@@ -27,6 +27,7 @@ class C4Module:
 @dataclass
 class C4Container(C4Node):
     type: str = "container"
+
 
 @dataclass
 class C4Component(C4Node):

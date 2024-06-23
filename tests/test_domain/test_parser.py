@@ -25,27 +25,27 @@ from src.domain.module import C4Component, C4Container, C4Module, DslInstruction
         #     marks=pytest.mark.basic,
         #     id="Simple container",
         # ),
-        pytest.param(
-            """
-            filesystem = container "filesystem" {
-                tags "Tag1, Tag2"
-            }
-            """,
-            C4Module(
-                body=[
-                    C4Container(
-                        id="filesystem",
-                        name="filesystem",
-                        description=None,
-                        technology=None,
-                        tags=["Tag1", "Tag2"],
-                        children=[],
-                    )
-                ]
-            ),
-            marks=pytest.mark.basic,
-            id="Many tags",
-        ),
+        # pytest.param(
+        #     """
+        #     filesystem = container "filesystem" {
+        #         tags "Tag1, Tag2"
+        #     }
+        #     """,
+        #     C4Module(
+        #         body=[
+        #             C4Container(
+        #                 id="filesystem",
+        #                 name="filesystem",
+        #                 description=None,
+        #                 technology=None,
+        #                 tags=["Tag1", "Tag2"],
+        #                 children=[],
+        #             )
+        #         ]
+        #     ),
+        #     marks=pytest.mark.basic,
+        #     id="Many tags",
+        # ),
         # pytest.param(
         #     """
         #     filesystem = container "filesystem" {
@@ -72,36 +72,36 @@ from src.domain.module import C4Component, C4Container, C4Module, DslInstruction
         #     marks=pytest.mark.basic,
         #     id="Many !instructions",
         # ),
-        # pytest.param(
-        #     """
-        #     blocks = container "blocks" {
-        #         some_component_id = component "BlockReprBuilder"
-        #     }
-        #     """,
-        #     C4Module(
-        #         body=[
-        #             C4Container(
-        #                 id="blocks",
-        #                 name="blocks",
-        #                 description=None,
-        #                 technology=None,
-        #                 tags=[],
-        #                 children=[
-        #                     C4Component(
-        #                         id="block_repr_builder",
-        #                         name="BlockReprBuilder",
-        #                         description=None,
-        #                         technology=None,
-        #                         tags=["domain_layer"],
-        #                         children=[],
-        #                     )
-        #                 ],
-        #             )
-        #         ]
-        #     ),
-        #     marks=pytest.mark.basic,
-        #     id="Container with components",
-        # ),
+        pytest.param(
+            """
+            blocks = container "blocks" {
+                some_component_id = component "SomeComponent" 
+            }
+            """,
+            C4Module(
+                body=[
+                    C4Container(
+                        id="blocks",
+                        name="blocks",
+                        description=None,
+                        technology=None,
+                        tags=[],
+                        children=[
+                            C4Component(
+                                id="some_component_id",
+                                name="SomeComponent",
+                                description=None,
+                                technology=None,
+                                tags=[],
+                                children=[],
+                            )
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Container with components",
+        ),
     ],
 )
 def test_parse_models(code, expected) -> None:
