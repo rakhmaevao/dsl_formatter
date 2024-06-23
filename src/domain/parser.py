@@ -22,14 +22,7 @@ _entity_id_pe = Word(alphas + "_")
 _entity_type_pe = Word(alphas + "_")
 _entity_name_pe = Word(alphas + "_")
 
-_property_pe = Group(
-    Word(alphas + "!")
-    + Suppress('"')
-    + Word(alphas + nums + "_" + "," + " ")
-    + Suppress('"')
-)
-_instruction_pe = Group(Word(alphas + "!") + Word(alphas + "/" + "_"))
-
+_property_pe = Group(Word(alphas + "!") + Word(alphas + nums + "_" + "," + " " + '"'))
 _c4_node_pe = Forward()
 
 _c4_node_pe << (
@@ -43,7 +36,7 @@ _c4_node_pe << (
         nested_expr(
             "{",
             "}",
-            (_property_pe ^ _instruction_pe ^ _c4_node_pe),
+            (_property_pe ^ _c4_node_pe),
             ignore_expr=(c_style_comment),
         )
     )("children")
