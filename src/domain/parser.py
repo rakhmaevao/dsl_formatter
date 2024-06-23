@@ -1,6 +1,7 @@
-from .module import C4Container, C4Module, DslInstruction
+from .module import C4Container, C4Module, C4Node, DslInstruction
 from pyparsing import (
     Combine,
+    Forward,
     White,
     Word,
     ZeroOrMore,
@@ -20,16 +21,26 @@ _entity_name_pe = Word(alphas + "_")
 _tags_pe = "tags" + Suppress('"') + Word(alphas + "_" + ",") + Suppress('"')
 _instruction_pe = Combine("!" + Word(alphas)) + Word(alphas)
 
-_children_pe = nested_expr("{", "}", ignore_expr=(quoted_string | c_style_comment))
+# _full_entity_description_pe = (
+#     _entity_id_pe
+#     + Suppress("=")
+#     + _entity_type_pe
+#     + Suppress('"')
+#     + _entity_name_pe
+#     + Suppress('"')
+#     + _children_pe
+# )
 
-_full_entity_description_pe = (
-    _entity_id_pe
+_c4_node_pe = Forward()
+
+_c4_node_pe << (
+    _entity_id_pe("entity_id")
     + Suppress("=")
-    + _entity_type_pe
+    + _entity_type_pe("entity_type")
     + Suppress('"')
-    + _entity_name_pe
+    + _entity_name_pe("entity_name")
     + Suppress('"')
-    + Optional(_children_pe)
+    + Optional(nested_expr("{", "}", (_c4_node_pe), ignore_expr=(quoted_string | c_style_comment)))("children")
 )
 
 
@@ -41,32 +52,26 @@ class DslParser:
 
     def __call__(self, content: str) -> C4Module:
         module = C4Module(body=[])
-        raw_parsing = _full_entity_description_pe.parseString(content).asList()
+        raw_parsing = _c4_node_pe.parse_string(content).as_dict()
+        logger.info(f"Parsing {raw_parsing["entity_id"]}")
+        
+        nodes = self.__further_parse_one_layer(raw_parsing)
+
+        return module
+
+    def __further_parse_one_layer(self, raw_parsing: list) -> list[C4Node]:
+        logger.debug(f"Parsing one layer {raw_parsing}")
+        nodes = []
         entity_id = raw_parsing[self._ENTITY_ID_INDEX]
         entity_type = raw_parsing[self._ENTITY_TYPE_INDEX]
         entity_name = raw_parsing[self._ENTITY_NAME_INDEX]
-        logger.debug(f"{raw_parsing=}")
-        tags = []
-        children = []
+        tags, children =  "", []
         if len(raw_parsing) > self._ENTITY_CHILDREN_INDEX:
-            children_raw = raw_parsing[self._ENTITY_CHILDREN_INDEX]
-            skip_next = False
-            for i, child_part in enumerate(children_raw):
-                if skip_next:
-                    skip_next = False
-                    continue
-                if child_part == "tags":
-                    tags = self.__parse_tags(children_raw[i + 1])
-                    skip_next = True
-                elif child_part.startswith("!"):
-                    children.append(
-                        DslInstruction(id=child_part, argument=children_raw[i + 1])
-                    )
-                    skip_next = True
-
+            logger.debug(f"Fined children for `{entity_id}`")
+            tags, children =  self.__parse_children(raw_parsing[self._ENTITY_CHILDREN_INDEX])
         match entity_type:
             case "container":
-                module.body.append(
+                nodes.append(
                     C4Container(
                         id=entity_id,
                         name=entity_name,
@@ -78,8 +83,30 @@ class DslParser:
                 )
             case _:
                 raise NotImplementedError(f"Unsupported entity type: {entity_type}")
-
-        return module
-
+        return nodes
+    
     def __parse_tags(self, raw_tags: str) -> str:
         return raw_tags[1:-1].replace(" ", "").split(",")
+
+    def __parse_children(self, raw_children: list) -> tuple[str, list]:
+        logger.debug(f"Parsing children {raw_children}")
+        tags = ""
+        children = []
+        skip_next = False
+        for i, child_part in enumerate(raw_children):
+            logger.debug(f"Parsing child {type(child_part)} {child_part}")
+            if isinstance(child_part, list):
+                children += self.__further_parse_one_layer(child_part)
+                continue
+            if skip_next:
+                skip_next = False
+                continue
+            if child_part == "tags":
+                tags = self.__parse_tags(raw_children[i + 1])
+                skip_next = True
+            elif child_part.startswith("!"):
+                children.append(
+                    DslInstruction(id=child_part, argument=raw_children[i + 1])
+                )
+                skip_next = True
+        return tags, children

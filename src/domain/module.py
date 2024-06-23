@@ -9,21 +9,25 @@ class DslInstruction:
 
 
 @dataclass
-class Node:
+class C4Node:
     id: str
     name: str
     description: str | None
     technology: str | None
     tags: str
-    children: list[Node | DslInstruction]
+    children: list[C4Node | DslInstruction]
     type: str = "unknown"
 
 
 @dataclass
 class C4Module:
-    body: list[Node]
+    body: list[C4Node]
 
 
 @dataclass
-class C4Container(Node):
+class C4Container(C4Node):
     type: str = "container"
+
+@dataclass
+class C4Component(C4Node):
+    type: str = "component"
