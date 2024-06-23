@@ -1,6 +1,6 @@
 import pytest
 from src.domain.code_generator import CodeGenerator
-from src.domain.parser import DslParser
+from src.domain.parser.parser import DslParser
 from src.domain.module import C4Container, C4Module
 
 

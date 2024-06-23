@@ -1,5 +1,5 @@
 import pytest
-from src.domain.parser import DslParser
+from src.domain.parser.parser import DslParser
 from src.domain.module import C4Module, C4Node, DslInstruction
 
 
