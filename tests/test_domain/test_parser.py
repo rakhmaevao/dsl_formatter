@@ -51,6 +51,7 @@ from src.domain.module import C4Component, C4Container, C4Module, DslInstruction
             filesystem = container "filesystem" {
                 tags "middleware"
                 !ards ards
+                !docs docs
             }
             """,
             C4Module(
@@ -63,6 +64,7 @@ from src.domain.module import C4Component, C4Container, C4Module, DslInstruction
                         tags=["middleware"],
                         children=[
                             DslInstruction(id="!ards", argument="ards"),
+                            DslInstruction(id="!docs", argument="docs"),
                         ],
                     )
                 ]

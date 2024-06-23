@@ -2,6 +2,8 @@ from .module import C4Component, C4Container, C4Module, C4Node, DslInstruction
 from pyparsing import (
     Combine,
     Forward,
+    Group,
+    ParseResults,
     White,
     Word,
     ZeroOrMore,
@@ -20,25 +22,13 @@ _entity_id_pe = Word(alphas + "_")
 _entity_type_pe = Word(alphas + "_")
 _entity_name_pe = Word(alphas + "_")
 
-_tags_pe = (
-    Suppress("tags")
+_property_pe = Group(
+    Combine(Word(alphas + "!"))
     + Suppress('"')
     + Word(alphas + nums + "_" + "," + " ")
     + Suppress('"')
-)("tags")
-_instruction_pe = (Combine(Word(alphas + "!")) + Word(alphas + "/" + "_"))(
-    "instruction"
 )
-
-# _full_entity_description_pe = (
-#     _entity_id_pe
-#     + Suppress("=")
-#     + _entity_type_pe
-#     + Suppress('"')
-#     + _entity_name_pe
-#     + Suppress('"')
-#     + _children_pe
-# )
+_instruction_pe = Group(Combine(Word(alphas + "!")) + Word(alphas + "/" + "_"))
 
 _c4_node_pe = Forward()
 
@@ -53,7 +43,7 @@ _c4_node_pe << (
         nested_expr(
             "{",
             "}",
-            (_tags_pe ^ _instruction_pe ^ _c4_node_pe),
+            (_property_pe ^ _instruction_pe ^ _c4_node_pe),
             ignore_expr=(c_style_comment),
         )
     )("children")
@@ -62,17 +52,17 @@ _c4_node_pe << (
 
 class DslParser:
     def __call__(self, content: str) -> C4Module:
-        raw_parsing = _c4_node_pe.parse_string(content).as_dict()
-        logger.info(f"Parsing {raw_parsing["entity_id"]}")
+        raw_parsing = _c4_node_pe.parse_string(content)
+        logger.info(f"Parsing {raw_parsing.as_list()}")
         return C4Module(body=self.__further_parse_one_layer(raw_parsing))
 
-    def __further_parse_one_layer(self, raw_parsing: dict) -> list[C4Node]:
+    def __further_parse_one_layer(self, raw_parsing: ParseResults) -> list[C4Node]:
         logger.debug(f"Parsing one layer {raw_parsing}")
         nodes = []
         tags, children = [], []
         if "children" in raw_parsing:
-            logger.debug(f"Fined children for `{raw_parsing["entity_id"]}`")
-            tags, children = self.__parse_children(raw_parsing["children"])
+            logger.debug(f"Fined children for `{raw_parsing.get("entity_id")}`")
+            tags, children = self.__parse_children(raw_parsing.get("children"))
         logger.debug(f"End of parsing {raw_parsing}. Start create C4Node")
         match raw_parsing["entity_type"]:
             case "container":
@@ -114,6 +104,9 @@ class DslParser:
         if "tags" in child_part:
             tags = self.__parse_tags(child_part["tags"][0])
         if "instruction" in child_part:
+            logger.debug(f"{child_part=}")
+            for item_ in child_part:
+                logger.debug(f"FFFF {item_} {item_.get_name()}")
             children.append(
                 DslInstruction(
                     id=child_part["instruction"][0],
