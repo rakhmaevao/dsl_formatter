@@ -8,12 +8,6 @@ from loguru import logger
 from .parser_elements import c4_node_pe
 
 
-@dataclass
-class _Property:
-    id: str
-    argument: str
-
-
 class DslParser:
     def __call__(self, content: str) -> DslModule:
         raw_parsing = c4_node_pe.parse_string(content)
@@ -35,12 +29,7 @@ class DslParser:
                 name=raw_parsing["entity_name"],
                 description=None,
                 technology=None,
-                children=[
-                    DslProperty(id=child.id, argument=child.argument)
-                    if isinstance(child, _Property)
-                    else child
-                    for child in children
-                ],
+                children=children,
             )
         )
         return nodes
@@ -54,7 +43,7 @@ class DslParser:
         for child in child_part:
             if len(child) == 2:
                 children.append(
-                    _Property(
+                    DslProperty(
                         id=child[0],
                         argument=child[1],
                     )
