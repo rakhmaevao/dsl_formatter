@@ -23,12 +23,12 @@ _entity_type_pe = Word(alphas + "_")
 _entity_name_pe = Word(alphas + "_")
 
 _property_pe = Group(
-    Combine(Word(alphas + "!"))
+    Word(alphas + "!")
     + Suppress('"')
     + Word(alphas + nums + "_" + "," + " ")
     + Suppress('"')
 )
-_instruction_pe = Group(Combine(Word(alphas + "!")) + Word(alphas + "/" + "_"))
+_instruction_pe = Group(Word(alphas + "!") + Word(alphas + "/" + "_"))
 
 _c4_node_pe = Forward()
 
