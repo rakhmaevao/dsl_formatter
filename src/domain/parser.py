@@ -80,10 +80,7 @@ class DslParser:
         )
         return nodes
 
-    def __parse_tags(self, raw_tags: str) -> str:
-        return raw_tags.replace(" ", "").split(",")
-
-    def __parse_children(self, raw_children: list[dict]) -> list[_Property | C4Node]:
+    def __parse_children(self, raw_children: ParseResults) -> list[_Property | C4Node]:
         logger.debug(f"Parsing children {raw_children}")
         children = []
         child_part = raw_children[0]
