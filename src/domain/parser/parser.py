@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from ..module import DslModule, DslNode, DslProperty
 from pyparsing import (
     ParseResults,
@@ -21,7 +20,7 @@ class DslParser:
         if "children" in raw_parsing:
             logger.debug(f"Fined children for `{raw_parsing.get("entity_id")}`")
             children = self.__parse_children(raw_parsing.get("children"))
-        logger.debug(f"End of parsing {raw_parsing}. Start create C4Node")
+        logger.debug(f"End of parsing {raw_parsing}. Start create node")
         nodes.append(
             DslNode(
                 id=raw_parsing["entity_id"],
