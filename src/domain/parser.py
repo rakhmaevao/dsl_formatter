@@ -103,20 +103,15 @@ class DslParser:
         logger.debug(f"Parsing children {raw_children}")
         tags = []
         children = []
-        skip_next = False
-        for i, child_part in enumerate(raw_children):
+        for child_part in raw_children:
             logger.debug(f"Parsing child {child_part}")
-            if isinstance(child_part, dict):
-                children += self.__further_parse_one_layer(child_part)
-                continue
-            if skip_next:
-                skip_next = False
-                continue
             if "tags" in child_part:
                 tags = self.__parse_tags(child_part["tags"][0])
-            elif child_part.startswith("!"):
-                children.append(
-                    DslInstruction(id=child_part, argument=raw_children[i + 1])
-                )
-                skip_next = True
+                continue
+            children += self.__further_parse_one_layer(child_part)
+            # elif child_part.startswith("!"):
+            #     children.append(
+            #         DslInstruction(id=child_part, argument=raw_children[i + 1])
+            #     )
+            #     skip_next = True
         return tags, children

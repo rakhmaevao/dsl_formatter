@@ -25,27 +25,27 @@ from src.domain.module import C4Component, C4Container, C4Module, DslInstruction
             marks=pytest.mark.basic,
             id="Simple container",
         ),
-        # pytest.param(
-        #     """
-        #     filesystem = container "filesystem" {
-        #         tags "Tag1, Tag2"
-        #     }
-        #     """,
-        #     C4Module(
-        #         body=[
-        #             C4Container(
-        #                 id="filesystem",
-        #                 name="filesystem",
-        #                 description=None,
-        #                 technology=None,
-        #                 tags=["Tag1", "Tag2"],
-        #                 children=[],
-        #             )
-        #         ]
-        #     ),
-        #     marks=pytest.mark.basic,
-        #     id="Many tags",
-        # ),
+        pytest.param(
+            """
+            filesystem = container "filesystem" {
+                tags "Tag1, Tag2"
+            }
+            """,
+            C4Module(
+                body=[
+                    C4Container(
+                        id="filesystem",
+                        name="filesystem",
+                        description=None,
+                        technology=None,
+                        tags=["Tag1", "Tag2"],
+                        children=[],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many tags",
+        ),
         # pytest.param(
         #     """
         #     filesystem = container "filesystem" {
