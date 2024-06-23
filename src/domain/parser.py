@@ -1,5 +1,16 @@
 from .module import C4Container, C4Module, DslInstruction
-from pyparsing import Combine, White, Word, ZeroOrMore, alphas, Suppress, Optional, c_style_comment, nested_expr, quoted_string
+from pyparsing import (
+    Combine,
+    White,
+    Word,
+    ZeroOrMore,
+    alphas,
+    Suppress,
+    Optional,
+    c_style_comment,
+    nested_expr,
+    quoted_string,
+)
 from loguru import logger
 
 _entity_id_pe = Word(alphas + "_")
@@ -9,7 +20,7 @@ _entity_name_pe = Word(alphas + "_")
 _tags_pe = "tags" + Suppress('"') + Word(alphas + "_" + ",") + Suppress('"')
 _instruction_pe = Combine("!" + Word(alphas)) + Word(alphas)
 
-_children_pe = nested_expr('{', '}', ignore_expr=(quoted_string | c_style_comment))
+_children_pe = nested_expr("{", "}", ignore_expr=(quoted_string | c_style_comment))
 
 _full_entity_description_pe = (
     _entity_id_pe
@@ -20,6 +31,7 @@ _full_entity_description_pe = (
     + Suppress('"')
     + _children_pe
 )
+
 
 class DslParser:
     _ENTITY_ID_INDEX = 0
@@ -43,7 +55,7 @@ class DslParser:
                 skip_next = False
                 continue
             if child_part == "tags":
-                tags = children_raw[i + 1]
+                tags = self.__parse_tags(children_raw[i + 1])
                 skip_next = True
             elif child_part.startswith("!"):
                 children.append(
@@ -59,7 +71,7 @@ class DslParser:
                         name=entity_name,
                         description=None,
                         technology=None,
-                        tags=[tags],
+                        tags=tags,
                         children=children,
                     )
                 )
@@ -67,3 +79,6 @@ class DslParser:
                 raise NotImplementedError(f"Unsupported entity type: {entity_type}")
 
         return module
+
+    def __parse_tags(self, raw_tags: str) -> str:
+        return raw_tags[1:-1].replace(" ", "").split(",")
