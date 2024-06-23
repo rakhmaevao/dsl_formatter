@@ -5,11 +5,13 @@ from pyparsing import (
     White,
     Word,
     ZeroOrMore,
+    alphanums,
     alphas,
     Suppress,
     Optional,
     c_style_comment,
     nested_expr,
+    nums,
     quoted_string,
 )
 from loguru import logger
@@ -18,8 +20,8 @@ _entity_id_pe = Word(alphas + "_")
 _entity_type_pe = Word(alphas + "_")
 _entity_name_pe = Word(alphas + "_")
 
-_tags_pe = "tags" + Suppress('"') + Word(alphas + "_" + ",") + Suppress('"')
-_instruction_pe = Combine("!" + Word(alphas)) + Word(alphas)
+_tags_pe = (Suppress("tags") + Suppress('"') + Word(alphas  + nums + "_" + "," + " ") + Suppress('"'))("tags")
+_instruction_pe = (Combine(Word(alphas)) + Word(alphas))("instruction")
 
 # _full_entity_description_pe = (
 #     _entity_id_pe
@@ -33,14 +35,14 @@ _instruction_pe = Combine("!" + Word(alphas)) + Word(alphas)
 
 _c4_node_pe = Forward()
 
-_c4_node_pe << (
+_c4_node_pe <<  (
     _entity_id_pe("entity_id")
     + Suppress("=")
     + _entity_type_pe("entity_type")
     + Suppress('"')
     + _entity_name_pe("entity_name")
     + Suppress('"')
-    + Optional(nested_expr("{", "}", (_c4_node_pe), ignore_expr=(quoted_string | c_style_comment)))("children")
+    + Optional(nested_expr("{", "}", (_tags_pe), ignore_expr=(c_style_comment)))("children")
 )
 
 
@@ -74,7 +76,7 @@ class DslParser:
         return nodes
     
     def __parse_tags(self, raw_tags: str) -> str:
-        return raw_tags[1:-1].replace(" ", "").split(",")
+        return raw_tags.replace(" ", "").split(",")
 
     def __parse_children(self, raw_children: dict) -> tuple[str, list]:
         logger.debug(f"Parsing children {raw_children}")
@@ -89,9 +91,8 @@ class DslParser:
             if skip_next:
                 skip_next = False
                 continue
-            if child_part == "tags":
-                tags = self.__parse_tags(raw_children[i + 1])
-                skip_next = True
+            if "tags" in child_part:
+                tags = self.__parse_tags(child_part["tags"][0])
             elif child_part.startswith("!"):
                 children.append(
                     DslInstruction(id=child_part, argument=raw_children[i + 1])
