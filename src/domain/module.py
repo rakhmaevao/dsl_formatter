@@ -11,24 +11,13 @@ class DslInstruction:
 @dataclass
 class C4Node:
     id: str
+    type: str
     name: str
     description: str | None
     technology: str | None
-    tags: list[str]
     children: list[C4Node | DslInstruction]
-    type: str = "unknown"
 
 
 @dataclass
 class C4Module:
     body: list[C4Node]
-
-
-@dataclass
-class C4Container(C4Node):
-    type: str = "container"
-
-
-@dataclass
-class C4Component(C4Node):
-    type: str = "component"
