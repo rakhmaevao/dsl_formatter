@@ -29,7 +29,7 @@ _full_entity_description_pe = (
     + Suppress('"')
     + _entity_name_pe
     + Suppress('"')
-    + _children_pe
+    + Optional(_children_pe)
 )
 
 
@@ -46,22 +46,23 @@ class DslParser:
         entity_type = raw_parsing[self._ENTITY_TYPE_INDEX]
         entity_name = raw_parsing[self._ENTITY_NAME_INDEX]
         logger.debug(f"{raw_parsing=}")
-        tags = ""
-        children_raw = raw_parsing[self._ENTITY_CHILDREN_INDEX]
+        tags = []
         children = []
-        skip_next = False
-        for i, child_part in enumerate(children_raw):
-            if skip_next:
-                skip_next = False
-                continue
-            if child_part == "tags":
-                tags = self.__parse_tags(children_raw[i + 1])
-                skip_next = True
-            elif child_part.startswith("!"):
-                children.append(
-                    DslInstruction(id=child_part, argument=children_raw[i + 1])
-                )
-                skip_next = True
+        if len(raw_parsing) > self._ENTITY_CHILDREN_INDEX:
+            children_raw = raw_parsing[self._ENTITY_CHILDREN_INDEX]
+            skip_next = False
+            for i, child_part in enumerate(children_raw):
+                if skip_next:
+                    skip_next = False
+                    continue
+                if child_part == "tags":
+                    tags = self.__parse_tags(children_raw[i + 1])
+                    skip_next = True
+                elif child_part.startswith("!"):
+                    children.append(
+                        DslInstruction(id=child_part, argument=children_raw[i + 1])
+                    )
+                    skip_next = True
 
         match entity_type:
             case "container":

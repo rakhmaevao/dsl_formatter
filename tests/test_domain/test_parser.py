@@ -6,11 +6,9 @@ from src.domain.module import C4Container, C4Module, DslInstruction
 @pytest.mark.parametrize(
     "code, expected",
     [
-        (
+        pytest.param(
             """
-            filesystem = container "filesystem" {
-                tags "middleware"
-            }
+            filesystem = container "filesystem"
             """,
             C4Module(
                 body=[
@@ -19,13 +17,15 @@ from src.domain.module import C4Container, C4Module, DslInstruction
                         name="filesystem",
                         description=None,
                         technology=None,
-                        tags=["middleware"],
+                        tags=[],
                         children=[],
                     )
                 ]
             ),
+            marks=pytest.mark.basic,
+            id="Simple container",
         ),
-        (
+        pytest.param(
             """
             filesystem = container "filesystem" {
                 tags "middleware, anotherTag"
@@ -43,30 +43,10 @@ from src.domain.module import C4Container, C4Module, DslInstruction
                     )
                 ]
             ),
+            marks=pytest.mark.basic,
+            id="Many tags",
         ),
-        (
-            """
-            filesystem = container "filesystem" {
-                tags "middleware"
-                !docs docs
-            }
-            """,
-            C4Module(
-                body=[
-                    C4Container(
-                        id="filesystem",
-                        name="filesystem",
-                        description=None,
-                        technology=None,
-                        tags=["middleware"],
-                        children=[
-                            DslInstruction(id="!docs", argument="docs"),
-                        ],
-                    )
-                ]
-            ),
-        ),
-        (
+        pytest.param(
             """
             filesystem = container "filesystem" {
                 tags "middleware"
@@ -89,6 +69,8 @@ from src.domain.module import C4Container, C4Module, DslInstruction
                     )
                 ]
             ),
+            marks=pytest.mark.basic,
+            id="Many !instructions",
         ),
     ],
 )
