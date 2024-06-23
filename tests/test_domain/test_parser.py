@@ -1,6 +1,6 @@
 import pytest
 from src.domain.parser.parser import DslParser
-from src.domain.module import C4Module, C4Node, DslInstruction
+from src.domain.module import DslModule, DslNode, DslProperty
 
 
 @pytest.mark.parametrize(
@@ -10,9 +10,9 @@ from src.domain.module import C4Module, C4Node, DslInstruction
             """
             filesystem = container "filesystem"
             """,
-            C4Module(
+            DslModule(
                 body=[
-                    C4Node(
+                    DslNode(
                         id="filesystem",
                         type="container",
                         name="filesystem",
@@ -31,15 +31,15 @@ from src.domain.module import C4Module, C4Node, DslInstruction
                 tags "Tag1, Tag2"
             }
             """,
-            C4Module(
+            DslModule(
                 body=[
-                    C4Node(
+                    DslNode(
                         id="filesystem",
                         type="container",
                         name="filesystem",
                         description=None,
                         technology=None,
-                        children=[DslInstruction(id="tags", argument='"Tag1, Tag2"')],
+                        children=[DslProperty(id="tags", argument='"Tag1, Tag2"')],
                     )
                 ]
             ),
@@ -54,18 +54,18 @@ from src.domain.module import C4Module, C4Node, DslInstruction
                 !docs docs
             }
             """,
-            C4Module(
+            DslModule(
                 body=[
-                    C4Node(
+                    DslNode(
                         id="filesystem",
                         type="container",
                         name="filesystem",
                         description=None,
                         technology=None,
                         children=[
-                            DslInstruction(id="tags", argument='"middleware"'),
-                            DslInstruction(id="!ards", argument="ards"),
-                            DslInstruction(id="!docs", argument="docs"),
+                            DslProperty(id="tags", argument='"middleware"'),
+                            DslProperty(id="!ards", argument="ards"),
+                            DslProperty(id="!docs", argument="docs"),
                         ],
                     )
                 ]
@@ -79,16 +79,16 @@ from src.domain.module import C4Module, C4Node, DslInstruction
                 some_component_id = component "SomeComponent" 
             }
             """,
-            C4Module(
+            DslModule(
                 body=[
-                    C4Node(
+                    DslNode(
                         id="blocks",
                         type="container",
                         name="blocks",
                         description=None,
                         technology=None,
                         children=[
-                            C4Node(
+                            DslNode(
                                 id="some_component_id",
                                 type="component",
                                 name="SomeComponent",

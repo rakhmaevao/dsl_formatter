@@ -1,14 +1,14 @@
 import pytest
 from src.domain.code_generator import CodeGenerator
 from src.domain.parser.parser import DslParser
-from src.domain.module import C4Container, C4Module
+from src.domain.module import C4Container, DslModule
 
 
 @pytest.mark.parametrize(
     "module, expected",
     [
         (
-            C4Module(
+            DslModule(
                 body=[
                     C4Container(
                         id="filesystem",

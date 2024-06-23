@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from ..module import C4Module, C4Node, DslInstruction
+from ..module import DslModule, DslNode, DslProperty
 from pyparsing import (
     Combine,
     Forward,
