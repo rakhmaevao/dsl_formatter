@@ -26,7 +26,9 @@ _tags_pe = (
     + Word(alphas + nums + "_" + "," + " ")
     + Suppress('"')
 )("tags")
-_instruction_pe = (Combine(Word(alphas)) + Word(alphas))("instruction")
+_instruction_pe = (Combine(Word(alphas + "!")) + Word(alphas + "/" + "_"))(
+    "instruction"
+)
 
 # _full_entity_description_pe = (
 #     _entity_id_pe
@@ -48,7 +50,12 @@ _c4_node_pe << (
     + _entity_name_pe("entity_name")
     + Suppress('"')
     + Optional(
-        nested_expr("{", "}", (_tags_pe ^ _c4_node_pe), ignore_expr=(c_style_comment))
+        nested_expr(
+            "{",
+            "}",
+            (_tags_pe ^ _instruction_pe ^ _c4_node_pe),
+            ignore_expr=(c_style_comment),
+        )
     )("children")
 )
 
@@ -103,15 +110,21 @@ class DslParser:
         logger.debug(f"Parsing children {raw_children}")
         tags = []
         children = []
-        for child_part in raw_children:
-            logger.debug(f"Parsing child {child_part}")
-            if "tags" in child_part:
-                tags = self.__parse_tags(child_part["tags"][0])
-                continue
+        child_part = raw_children[0]
+        if "tags" in child_part:
+            tags = self.__parse_tags(child_part["tags"][0])
+        if "instruction" in child_part:
+            children.append(
+                DslInstruction(
+                    id=child_part["instruction"][0],
+                    argument=child_part["instruction"][1],
+                )
+            )
+        if "entity_id" in child_part:
             children += self.__further_parse_one_layer(child_part)
-            # elif child_part.startswith("!"):
-            #     children.append(
-            #         DslInstruction(id=child_part, argument=raw_children[i + 1])
-            #     )
-            #     skip_next = True
+        # elif child_part.startswith("!"):
+        #     children.append(
+        #         DslInstruction(id=child_part, argument=raw_children[i + 1])
+        #     )
+        #     skip_next = True
         return tags, children

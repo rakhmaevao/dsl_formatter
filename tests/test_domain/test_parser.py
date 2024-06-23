@@ -46,32 +46,30 @@ from src.domain.module import C4Component, C4Container, C4Module, DslInstruction
             marks=pytest.mark.basic,
             id="Many tags",
         ),
-        # pytest.param(
-        #     """
-        #     filesystem = container "filesystem" {
-        #         tags "middleware"
-        #         !docs docs
-        #         !ards ards
-        #     }
-        #     """,
-        #     C4Module(
-        #         body=[
-        #             C4Container(
-        #                 id="filesystem",
-        #                 name="filesystem",
-        #                 description=None,
-        #                 technology=None,
-        #                 tags=["middleware"],
-        #                 children=[
-        #                     DslInstruction(id="!docs", argument="docs"),
-        #                     DslInstruction(id="!ards", argument="ards"),
-        #                 ],
-        #             )
-        #         ]
-        #     ),
-        #     marks=pytest.mark.basic,
-        #     id="Many !instructions",
-        # ),
+        pytest.param(
+            """
+            filesystem = container "filesystem" {
+                tags "middleware"
+                !ards ards
+            }
+            """,
+            C4Module(
+                body=[
+                    C4Container(
+                        id="filesystem",
+                        name="filesystem",
+                        description=None,
+                        technology=None,
+                        tags=["middleware"],
+                        children=[
+                            DslInstruction(id="!ards", argument="ards"),
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many !instructions",
+        ),
         pytest.param(
             """
             blocks = container "blocks" {
