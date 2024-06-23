@@ -6,25 +6,25 @@ from src.domain.module import C4Component, C4Container, C4Module, DslInstruction
 @pytest.mark.parametrize(
     "code, expected",
     [
-        # pytest.param(
-        #     """
-        #     filesystem = container "filesystem"
-        #     """,
-        #     C4Module(
-        #         body=[
-        #             C4Container(
-        #                 id="filesystem",
-        #                 name="filesystem",
-        #                 description=None,
-        #                 technology=None,
-        #                 tags=[],
-        #                 children=[],
-        #             )
-        #         ]
-        #     ),
-        #     marks=pytest.mark.basic,
-        #     id="Simple container",
-        # ),
+        pytest.param(
+            """
+            filesystem = container "filesystem"
+            """,
+            C4Module(
+                body=[
+                    C4Container(
+                        id="filesystem",
+                        name="filesystem",
+                        description=None,
+                        technology=None,
+                        tags=[],
+                        children=[],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Simple container",
+        ),
         # pytest.param(
         #     """
         #     filesystem = container "filesystem" {
