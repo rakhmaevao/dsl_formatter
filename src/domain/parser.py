@@ -45,36 +45,24 @@ _c4_node_pe << (
 
 
 class DslParser:
-    _ENTITY_ID_INDEX = 0
-    _ENTITY_TYPE_INDEX = 1
-    _ENTITY_NAME_INDEX = 2
-    _ENTITY_CHILDREN_INDEX = 3
-
     def __call__(self, content: str) -> C4Module:
-        module = C4Module(body=[])
         raw_parsing = _c4_node_pe.parse_string(content).as_dict()
         logger.info(f"Parsing {raw_parsing["entity_id"]}")
-        
-        nodes = self.__further_parse_one_layer(raw_parsing)
+        return C4Module(body=self.__further_parse_one_layer(raw_parsing))
 
-        return module
-
-    def __further_parse_one_layer(self, raw_parsing: list) -> list[C4Node]:
+    def __further_parse_one_layer(self, raw_parsing: dict) -> list[C4Node]:
         logger.debug(f"Parsing one layer {raw_parsing}")
         nodes = []
-        entity_id = raw_parsing[self._ENTITY_ID_INDEX]
-        entity_type = raw_parsing[self._ENTITY_TYPE_INDEX]
-        entity_name = raw_parsing[self._ENTITY_NAME_INDEX]
         tags, children =  "", []
-        if len(raw_parsing) > self._ENTITY_CHILDREN_INDEX:
-            logger.debug(f"Fined children for `{entity_id}`")
-            tags, children =  self.__parse_children(raw_parsing[self._ENTITY_CHILDREN_INDEX])
-        match entity_type:
+        if "children" in raw_parsing:
+            logger.debug(f"Fined children for `{raw_parsing["entity_id"]}`")
+            tags, children =  self.__parse_children(raw_parsing["children"])
+        match raw_parsing["entity_type"]:
             case "container":
                 nodes.append(
                     C4Container(
-                        id=entity_id,
-                        name=entity_name,
+                        id=raw_parsing["entity_id"],
+                        name=raw_parsing["entity_name"],
                         description=None,
                         technology=None,
                         tags=tags,
@@ -82,19 +70,19 @@ class DslParser:
                     )
                 )
             case _:
-                raise NotImplementedError(f"Unsupported entity type: {entity_type}")
+                raise NotImplementedError(f"Unsupported entity type: {raw_parsing['entity_type']}")
         return nodes
     
     def __parse_tags(self, raw_tags: str) -> str:
         return raw_tags[1:-1].replace(" ", "").split(",")
 
-    def __parse_children(self, raw_children: list) -> tuple[str, list]:
+    def __parse_children(self, raw_children: dict) -> tuple[str, list]:
         logger.debug(f"Parsing children {raw_children}")
         tags = ""
         children = []
         skip_next = False
         for i, child_part in enumerate(raw_children):
-            logger.debug(f"Parsing child {type(child_part)} {child_part}")
+            logger.debug(f"Parsing child {child_part}")
             if isinstance(child_part, list):
                 children += self.__further_parse_one_layer(child_part)
                 continue
