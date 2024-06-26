@@ -40,6 +40,6 @@ class DslParser:
                             argument=child.get("property_value"),
                         )
                     )
-                if child.get_name() == "node":
-                    children += self.__further_parse_one_layer(child)
+        if "entity_id" in raw_children:
+            children += self.__further_parse_one_layer(raw_children)
         return children
