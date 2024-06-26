@@ -31,15 +31,16 @@ class DslParser:
         self, raw_children: ParseResults
     ) -> list[DslProperty | DslNode]:
         children = []
-        for child in raw_children:
+        child_part = raw_children[0]
+        for child in child_part:
             if isinstance(child, ParseResults):
                 if child.get_name() == "property":
                     children.append(
                         DslProperty(
-                            id=child.get("property_name"),
-                            argument=child.get("property_value"),
+                            id=child[0],
+                            argument=child[1],
                         )
                     )
-        if "entity_id" in raw_children:
-            children += self.__further_parse_one_layer(raw_children)
+        if "entity_id" in child_part:
+            children += self.__further_parse_one_layer(child_part)
         return children
