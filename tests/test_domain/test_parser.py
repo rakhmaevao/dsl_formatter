@@ -25,27 +25,24 @@ from src.domain.module import DslModule, DslNode, DslProperty
         #     marks=pytest.mark.basic,
         #     id="Simple container",
         # ),
-        # pytest.param(
-        #     """
-        #     filesystem = container "filesystem" {
-        #         tags "Tag1, Tag2"
-        #     }
-        #     """,
-        #     DslModule(
-        #         body=[
-        #             DslNode(
-        #                 id="filesystem",
-        #                 type="container",
-        #                 name="filesystem",
-        #                 description=None,
-        #                 technology=None,
-        #                 children=[DslProperty(id="tags", argument='"Tag1, Tag2"')],
-        #             )
-        #         ]
-        #     ),
-        #     marks=pytest.mark.basic,
-        #     id="Many tags",
-        # ),
+        pytest.param(
+            """
+            filesystem = container filesystem {
+                tags "Tag1, Tag2"
+            }
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="filesystem",
+                        descriptors=["container", "filesystem"],
+                        children=[DslProperty(id="tags", argument='"Tag1, Tag2"')],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many tags",
+        ),
         pytest.param(
             """
             filesystem = container filesystem {
