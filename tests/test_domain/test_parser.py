@@ -46,33 +46,30 @@ from src.domain.module import DslModule, DslNode, DslProperty
         #     marks=pytest.mark.basic,
         #     id="Many tags",
         # ),
-        # pytest.param(
-        #     """
-        #     filesystem = container "filesystem" {
-        #         tags "middleware"
-        #         !ards ards
-        #         !docs docs
-        #     }
-        #     """,
-        #     DslModule(
-        #         body=[
-        #             DslNode(
-        #                 id="filesystem",
-        #                 type="container",
-        #                 name="filesystem",
-        #                 description=None,
-        #                 technology=None,
-        #                 children=[
-        #                     DslProperty(id="tags", argument='"middleware"'),
-        #                     DslProperty(id="!ards", argument="ards"),
-        #                     DslProperty(id="!docs", argument="docs"),
-        #                 ],
-        #             )
-        #         ]
-        #     ),
-        #     marks=pytest.mark.basic,
-        #     id="Many !instructions",
-        # ),
+        pytest.param(
+            """
+            filesystem = container filesystem {
+                tags middleware
+                !ards ards
+                !docs docs
+            }
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="filesystem",
+                        descriptors=["container", "filesystem"],
+                        children=[
+                            DslProperty(id="tags", argument="middleware"),
+                            DslProperty(id="!ards", argument="ards"),
+                            DslProperty(id="!docs", argument="docs"),
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many !instructions",
+        ),
         pytest.param(
             """
             blocks = container blocks {
