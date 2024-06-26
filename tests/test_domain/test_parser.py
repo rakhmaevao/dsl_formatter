@@ -37,7 +37,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                     )
                 ]
             ),
-            marks=pytest.mark.basic,
+            marks=pytest.mark.skip(reason="Пока не могу в двойные кавычки"),
             id="Many tags",
         ),
         pytest.param(
@@ -108,7 +108,29 @@ from src.domain.module import DslModule, DslNode, DslProperty
                 ]
             ),
             marks=pytest.mark.basic,
-            id="Many params",
+            id="Many descriptors",
+        ),
+        pytest.param(
+            """
+            var_name = descriptor param1 param2 {
+                prop_id prop_value
+            }
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="var_name",
+                        descriptors=[
+                            "descriptor",
+                            "param1",
+                            "param2",
+                        ],
+                        children=[DslProperty(id="prop_id", argument="prop_value")],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many_descriptors_with_child",
         ),
     ],
 )

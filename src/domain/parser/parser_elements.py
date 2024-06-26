@@ -21,9 +21,7 @@ from pyparsing import (
 _entity_id_pe = Word(alphas + "_")
 
 _descriptor_pe = Word(alphas + "_" + nums)
-_property_pe = Group(Word(alphas + "!") + Word(alphas + nums + "_" + "," + " " + '"'))(
-    "property"
-)
+_property_pe = Group(Word(alphas + "!" + "_") + Word(alphas + nums + "_"))("property")
 c4_node_pe = Forward()
 
 c4_node_pe << (

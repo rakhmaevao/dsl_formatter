@@ -10,7 +10,7 @@ from .parser_elements import c4_node_pe
 class DslParser:
     def __call__(self, content: str) -> DslModule:
         raw_parsing = c4_node_pe.parse_string(content)
-        logger.info(f"Raw parsing:\n{raw_parsing.dump()}")
+        logger.debug(f"Raw parsing:\n{raw_parsing.dump()}")
         return DslModule(body=self.__further_parse_one_layer(raw_parsing))
 
     def __further_parse_one_layer(self, raw_parsing: ParseResults) -> list[DslNode]:
