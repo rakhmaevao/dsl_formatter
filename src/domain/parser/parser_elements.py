@@ -4,6 +4,7 @@ from pyparsing import (
     Combine,
     Forward,
     Group,
+    OneOrMore,
     ParseResults,
     White,
     Word,
@@ -16,22 +17,19 @@ from pyparsing import (
     nested_expr,
     nums,
 )
-from loguru import logger
 
 _entity_id_pe = Word(alphas + "_")
-_entity_type_pe = Word(alphas + "_")
-_entity_name_pe = Word(alphas + "_")
 
-_property_pe = Group(Word(alphas + "!") + Word(alphas + nums + "_" + "," + " " + '"'))
+_descriptor_pe = Word(alphas + "_" + nums)
+_property_pe = Group(Word(alphas + "!") + Word(alphas + nums + "_" + "," + " " + '"'))(
+    "property"
+)
 c4_node_pe = Forward()
 
 c4_node_pe << (
     _entity_id_pe("entity_id")
     + Suppress("=")
-    + _entity_type_pe("entity_type")
-    + Suppress('"')
-    + _entity_name_pe("entity_name")
-    + Suppress('"')
+    + Group(OneOrMore(_descriptor_pe))("entity_descriptors")
     + Optional(
         nested_expr(
             "{",

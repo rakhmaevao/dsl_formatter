@@ -11,10 +11,7 @@ class DslProperty:
 @dataclass
 class DslNode:
     id: str
-    type: str
-    name: str
-    description: str | None
-    technology: str | None
+    descriptors: list[str]
     children: list[DslNode | DslProperty]
 
 
