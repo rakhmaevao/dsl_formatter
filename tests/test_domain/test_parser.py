@@ -62,7 +62,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                 ]
             ),
             marks=pytest.mark.basic,
-            id="Many !instructions",
+            id="Many_instructions",
         ),
         pytest.param(
             """
@@ -86,7 +86,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                 ]
             ),
             marks=pytest.mark.basic,
-            id="Container with components",
+            id="Container_with_components",
         ),
         pytest.param(
             """
@@ -131,6 +131,46 @@ from src.domain.module import DslModule, DslNode, DslProperty
             ),
             marks=pytest.mark.basic,
             id="Many_descriptors_with_child",
+        ),
+        pytest.param(
+            """
+            var_name = descriptor param1 {
+                other_var_name = descriptor param
+                var_name = descriptor param
+            }
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="var_name",
+                        descriptors=[
+                            "descriptor",
+                            "param1",
+                        ],
+                        children=[
+                            DslProperty(id="prop_id", argument="prop_value"),
+                            DslNode(
+                                id="var_name_1",
+                                descriptors=[
+                                    "descriptor1",
+                                    "param1",
+                                ],
+                                children=[],
+                            ),
+                            DslNode(
+                                id="var_name_2",
+                                descriptors=[
+                                    "descriptor2",
+                                    "param2",
+                                ],
+                                children=[],
+                            ),
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many_node_children",
         ),
     ],
 )
