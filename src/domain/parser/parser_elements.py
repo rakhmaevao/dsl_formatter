@@ -28,7 +28,7 @@ _property_pe = Group(
 c4_node_pe = Forward()
 
 _node_extension_pe = (
-    Suppress("{") + ZeroOrMore(_property_pe ^ c4_node_pe) + Suppress("}")
+    Suppress("{") + ZeroOrMore(_property_pe ^ Group(c4_node_pe)("node")) + Suppress("}")
 )
 
 c4_node_pe << (
