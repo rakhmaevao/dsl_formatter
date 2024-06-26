@@ -97,28 +97,28 @@ from src.domain.module import DslModule, DslNode, DslProperty
             marks=pytest.mark.basic,
             id="Container with components",
         ),
-        # pytest.param(
-        #     """
-        #     var_name = descriptor param1 param2 param3 param4
-        #     """,
-        #     DslModule(
-        #         body=[
-        #             DslNode(
-        #                 id="var_name",
-        #                 descriptors=[
-        #                     "descriptor",
-        #                     "param1",
-        #                     "param2",
-        #                     "param3",
-        #                     "param4",
-        #                 ],
-        #                 children=[],
-        #             )
-        #         ]
-        #     ),
-        #     marks=pytest.mark.basic,
-        #     id="Many params",
-        # ),
+        pytest.param(
+            """
+            var_name = descriptor param1 param2 param3 param4
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="var_name",
+                        descriptors=[
+                            "descriptor",
+                            "param1",
+                            "param2",
+                            "param3",
+                            "param4",
+                        ],
+                        children=[],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many params",
+        ),
     ],
 )
 def test_parse_models(code, expected) -> None:
