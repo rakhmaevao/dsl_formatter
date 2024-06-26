@@ -6,25 +6,22 @@ from src.domain.module import DslModule, DslNode, DslProperty
 @pytest.mark.parametrize(
     "code, expected",
     [
-        # pytest.param(
-        #     """
-        #     filesystem = container "filesystem"
-        #     """,
-        #     DslModule(
-        #         body=[
-        #             DslNode(
-        #                 id="filesystem",
-        #                 type="container",
-        #                 name="filesystem",
-        #                 description=None,
-        #                 technology=None,
-        #                 children=[],
-        #             )
-        #         ]
-        #     ),
-        #     marks=pytest.mark.basic,
-        #     id="Simple container",
-        # ),
+        pytest.param(
+            """
+            filesystem = container filesystem
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="filesystem",
+                        descriptors=["container", "filesystem"],
+                        children=[],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Simple container",
+        ),
         pytest.param(
             """
             filesystem = container filesystem {
