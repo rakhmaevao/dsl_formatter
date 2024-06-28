@@ -60,7 +60,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
             """
             filesystem = container filesystem {
                 tags middleware
-                ards ards
+                !ards ards
                 docs docs
             }
             """,
@@ -71,7 +71,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                         descriptors=["container", "filesystem"],
                         children=[
                             DslProperty(id="tags", argument="middleware"),
-                            DslProperty(id="ards", argument="ards"),
+                            DslProperty(id="!ards", argument="ards"),
                             DslProperty(id="docs", argument="docs"),
                         ],
                     )
@@ -109,7 +109,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
         pytest.param(
             """
             blocks = container blocks {
-                tags middleware
+                !tags middleware
                 some_component_id = component some_component
             }
             """,
@@ -119,7 +119,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                         id="blocks",
                         descriptors=["container", "blocks"],
                         children=[
-                            DslProperty(id="tags", argument="middleware"),
+                            DslProperty(id="!tags", argument="middleware"),
                             DslNode(
                                 id="some_component_id",
                                 descriptors=["component", "some_component"],

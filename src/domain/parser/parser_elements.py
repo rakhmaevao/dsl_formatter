@@ -22,15 +22,13 @@ from pyparsing import (
     nums,
 )
 
-# ParserElement.set_default_whitespace_chars(' \t')
-
 _entity_id_pe = Word(alphas + "_")
 
 _descriptor_pe = Word(alphas + "_" + nums)
 
 
 ParserElement.set_default_whitespace_chars("")
-_children_pe = OneOrMore(Word(alphanums + "_" + " " + "=" + "\n"))
+_children_pe = OneOrMore(Word(alphanums + "_" + " " + "=" + "\n" + "!"))
 ParserElement.set_default_whitespace_chars(" ")
 _property_pe = Group(
     Word(alphas + "!" + "_")("property_name")
