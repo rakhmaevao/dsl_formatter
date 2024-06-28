@@ -111,10 +111,14 @@ from src.domain.module import DslModule, DslNode, DslProperty
             id="Many descriptors",
         ),
         pytest.param(
-            """
-            var_name = descriptor param1 param2 {
-                prop_id prop_value
-            }
+            #             """
+            # var_name = descriptor param1 param2 {
+            #     comp_name = component some_component
+            #     other_name = component other_component
+            # }
+            # """,
+            """var_name = descriptor param1 param2
+            other_name = component other_component
             """,
             DslModule(
                 body=[

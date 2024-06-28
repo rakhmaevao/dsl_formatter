@@ -30,8 +30,11 @@ class DslParser:
     def __parse_children(
         self, raw_children: ParseResults
     ) -> list[DslProperty | DslNode]:
-        children = []
         child_part = raw_children[0]
+        st_children = " ".join(child_part)
+        logger.info(f"Children: {child_part[0]}")
+        children = []
+
         for child in child_part:
             if isinstance(child, ParseResults):
                 if child.get_name() == "property":
