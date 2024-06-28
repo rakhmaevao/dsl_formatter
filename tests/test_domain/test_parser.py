@@ -43,14 +43,14 @@ from src.domain.module import DslModule, DslNode, DslProperty
         pytest.param(
             """
             tags middleware
-            !ards ards
-            !docs docs
+            ards ards
+            docs docs
             """,
             DslModule(
                 body=[
                     DslProperty(id="tags", argument="middleware"),
-                    DslProperty(id="!ards", argument="ards"),
-                    DslProperty(id="!docs", argument="docs"),
+                    DslProperty(id="ards", argument="ards"),
+                    DslProperty(id="docs", argument="docs"),
                 ]
             ),
             marks=pytest.mark.basic,
@@ -60,15 +60,21 @@ from src.domain.module import DslModule, DslNode, DslProperty
             """
             filesystem = container filesystem {
                 tags middleware
-                !ards ards
-                !docs docs
+                ards ards
+                docs docs
             }
             """,
             DslModule(
                 body=[
-                    DslProperty(id="tags", argument="middleware"),
-                    DslProperty(id="!ards", argument="ards"),
-                    DslProperty(id="!docs", argument="docs"),
+                    DslNode(
+                        id="filesystem",
+                        descriptors=["container", "filesystem"],
+                        children=[
+                            DslProperty(id="tags", argument="middleware"),
+                            DslProperty(id="ards", argument="ards"),
+                            DslProperty(id="docs", argument="docs"),
+                        ],
+                    )
                 ]
             ),
             marks=pytest.mark.basic,
