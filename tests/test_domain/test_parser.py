@@ -109,6 +109,32 @@ from src.domain.module import DslModule, DslNode, DslProperty
         pytest.param(
             """
             blocks = container blocks {
+                tags middleware
+                some_component_id = component some_component
+            }
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="blocks",
+                        descriptors=["container", "blocks"],
+                        children=[
+                            DslProperty(id="tags", argument="middleware"),
+                            DslNode(
+                                id="some_component_id",
+                                descriptors=["component", "some_component"],
+                                children=[],
+                            ),
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Property_and_nodes_in_nodes",
+        ),
+        pytest.param(
+            """
+            blocks = container blocks {
                 some_component_id = component some_component
             }
             """,
