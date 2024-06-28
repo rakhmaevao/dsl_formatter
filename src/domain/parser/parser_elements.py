@@ -39,10 +39,10 @@ _property_pe = Group(
 )("property")
 
 c4_node_pe = OneOrMore(
-    Suppress(ZeroOrMore("\n"))
-    + (
-        _property_pe
-        ^ Group(
+    (Suppress(ZeroOrMore("\n")) + _property_pe)
+    ^ (
+        Suppress(ZeroOrMore("\n"))
+        + Group(
             _entity_id_pe("entity_id")
             + Suppress("=")
             + Group(OneOrMore(_descriptor_pe, stop_on=(LineEnd() | "{")))(
