@@ -62,7 +62,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                 ]
             ),
             marks=pytest.mark.basic,
-            id="Many !instructions",
+            id="Many_instructions",
         ),
         pytest.param(
             """
