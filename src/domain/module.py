@@ -3,27 +3,18 @@ from dataclasses import dataclass
 
 
 @dataclass
-class DslInstruction:
+class DslProperty:
     id: str
     argument: str
 
 
 @dataclass
-class Node:
+class DslNode:
     id: str
-    name: str
-    description: str | None
-    technology: str | None
-    tags: str
-    children: list[Node | DslInstruction]
-    type: str = "unknown"
+    descriptors: list[str]
+    children: list[DslNode | DslProperty]
 
 
 @dataclass
-class C4Module:
-    body: list[Node]
-
-
-@dataclass
-class C4Container(Node):
-    type: str = "container"
+class DslModule:
+    body: list[DslNode]

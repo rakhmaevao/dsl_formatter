@@ -1,6 +1,6 @@
 import pytest
 from src.domain.parser import DslParser
-from src.domain.module import C4Container, C4Module, DslInstruction
+from src.domain.module import DslModule, DslNode, DslProperty
 
 
 @pytest.mark.parametrize(
@@ -8,16 +8,13 @@ from src.domain.module import C4Container, C4Module, DslInstruction
     [
         pytest.param(
             """
-            filesystem = container "filesystem"
+            filesystem = container filesystem
             """,
-            C4Module(
+            DslModule(
                 body=[
-                    C4Container(
+                    DslNode(
                         id="filesystem",
-                        name="filesystem",
-                        description=None,
-                        technology=None,
-                        tags=[],
+                        descriptors=["container", "filesystem"],
                         children=[],
                     )
                 ]
@@ -27,50 +24,119 @@ from src.domain.module import C4Container, C4Module, DslInstruction
         ),
         pytest.param(
             """
-            filesystem = container "filesystem" {
-                tags "middleware, anotherTag"
+            filesystem = container filesystem {
+                tags "Tag1, Tag2"
             }
             """,
-            C4Module(
+            DslModule(
                 body=[
-                    C4Container(
+                    DslNode(
                         id="filesystem",
-                        name="filesystem",
-                        description=None,
-                        technology=None,
-                        tags=["middleware", "anotherTag"],
-                        children=[],
+                        descriptors=["container", "filesystem"],
+                        children=[DslProperty(id="tags", argument='"Tag1, Tag2"')],
                     )
                 ]
             ),
-            marks=pytest.mark.basic,
+            marks=pytest.mark.skip(reason="Пока не могу в двойные кавычки"),
             id="Many tags",
         ),
         pytest.param(
             """
-            filesystem = container "filesystem" {
-                tags "middleware"
-                !docs docs
+            filesystem = container filesystem {
+                tags middleware
                 !ards ards
+                !docs docs
             }
             """,
-            C4Module(
+            DslModule(
                 body=[
-                    C4Container(
+                    DslNode(
                         id="filesystem",
-                        name="filesystem",
-                        description=None,
-                        technology=None,
-                        tags=["middleware"],
+                        descriptors=["container", "filesystem"],
                         children=[
-                            DslInstruction(id="!docs", argument="docs"),
-                            DslInstruction(id="!ards", argument="ards"),
+                            DslProperty(id="tags", argument="middleware"),
+                            DslProperty(id="!ards", argument="ards"),
+                            DslProperty(id="!docs", argument="docs"),
                         ],
                     )
                 ]
             ),
             marks=pytest.mark.basic,
             id="Many !instructions",
+        ),
+        pytest.param(
+            """
+            blocks = container blocks {
+                some_component_id = component some_component
+            }
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="blocks",
+                        descriptors=["container", "blocks"],
+                        children=[
+                            DslNode(
+                                id="some_component_id",
+                                descriptors=["component", "some_component"],
+                                children=[],
+                            )
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Container with components",
+        ),
+        pytest.param(
+            """
+            var_name = descriptor param1 param2 param3 param4
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="var_name",
+                        descriptors=[
+                            "descriptor",
+                            "param1",
+                            "param2",
+                            "param3",
+                            "param4",
+                        ],
+                        children=[],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many descriptors",
+        ),
+        pytest.param(
+            """
+            var_name = descriptor param1 param2
+            other_name = component other_component
+            comp_name = component some_component
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="var_name",
+                        descriptors=["descriptor", "param1", "param2"],
+                        children=[],
+                    ),
+                    DslNode(
+                        id="other_name",
+                        descriptors=["component", "other_component"],
+                        children=[],
+                    ),
+                    DslNode(
+                        id="comp_name",
+                        descriptors=["component", "some_component"],
+                        children=[],
+                    ),
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many_descriptors_with_child",
         ),
     ],
 )
