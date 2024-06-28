@@ -104,7 +104,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                 ]
             ),
             marks=pytest.mark.basic,
-            id="Many_instructions_in_node",
+            id="Property_and_nodes",
         ),
         pytest.param(
             """
