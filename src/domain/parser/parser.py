@@ -9,19 +9,23 @@ from .parser_elements import c4_node_pe
 
 class DslParser:
     def __call__(self, content: str) -> DslModule:
-        raw_parsing = c4_node_pe.parse_string(content)
-        logger.debug(f"Raw parsing:\n{raw_parsing.dump()}")
-        return DslModule(body=self.__further_parse_one_layer(raw_parsing))
+        pp_result = c4_node_pe.parse_string(content)
+        logger.debug(f"PP parsing:\n{pp_result.dump()}")
+        result = []
+        for element in pp_result:
+            result += self.__further_parse_one_layer(element)
+        return DslModule(body=result)
 
-    def __further_parse_one_layer(self, raw_parsing: ParseResults) -> list[DslNode]:
+    def __further_parse_one_layer(self, pp_result: ParseResults) -> list[DslNode]:
+        logger.info(f"Parsing: {pp_result.as_dict()}")
         nodes = []
         children = []
-        if "children" in raw_parsing:
-            children = self.__parse_children(raw_parsing.get("children"))
+        if "children" in pp_result:
+            children = self.__parse_children(pp_result.get("children"))
         nodes.append(
             DslNode(
-                id=raw_parsing["entity_id"],
-                descriptors=raw_parsing["entity_descriptors"].as_list(),
+                id=pp_result["entity_id"],
+                descriptors=pp_result["entity_descriptors"].as_list(),
                 children=children,
             )
         )

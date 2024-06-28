@@ -35,18 +35,21 @@ ParserElement.set_default_whitespace_chars(" ")
 
 
 c4_node_pe = OneOrMore(
-    # LineStart()
-    # + ZeroOrMore(" ")
-    _entity_id_pe("entity_id")
-    + Suppress("=")
-    + Group(OneOrMore(_descriptor_pe, stop_on=(LineEnd() | "{")))("entity_descriptors")
-    + "\n"
-    # + Optional(
-    #     nested_expr(
-    #         "{",
-    #         "}",
-    #         _children_pe,
-    #         ignore_expr=(c_style_comment),
-    #     )
-    # )("children")
+    Suppress(ZeroOrMore("\n"))
+    + Group(
+        _entity_id_pe("entity_id")
+        + Suppress("=")
+        + Group(OneOrMore(_descriptor_pe, stop_on=(LineEnd() | "{")))(
+            "entity_descriptors"
+        )
+        + (
+            Suppress("\n")
+            | nested_expr(
+                "{",
+                "}",
+                _children_pe,
+                ignore_expr=(c_style_comment),
+            )("children")
+        )
+    )
 )
