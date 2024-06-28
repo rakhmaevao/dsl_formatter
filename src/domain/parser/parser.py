@@ -17,7 +17,12 @@ class DslParser:
         return DslModule(body=result)
 
     def __further_parse_one_layer(self, pp_result: ParseResults) -> list[DslNode]:
-        logger.info(f"Parsing: {pp_result.as_dict()}")
+        if pp_result.get_name() == "property":
+            return [
+                DslProperty(
+                    id=pp_result["property_name"], argument=pp_result["property_value"]
+                )
+            ]
         nodes = []
         children = []
         if "children" in pp_result:

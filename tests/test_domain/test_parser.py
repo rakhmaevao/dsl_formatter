@@ -42,23 +42,15 @@ from src.domain.module import DslModule, DslNode, DslProperty
         ),
         pytest.param(
             """
-            filesystem = container filesystem {
-                tags middleware
-                !ards ards
-                !docs docs
-            }
+            tags middleware
+            !ards ards
+            !docs docs
             """,
             DslModule(
                 body=[
-                    DslNode(
-                        id="filesystem",
-                        descriptors=["container", "filesystem"],
-                        children=[
-                            DslProperty(id="tags", argument="middleware"),
-                            DslProperty(id="!ards", argument="ards"),
-                            DslProperty(id="!docs", argument="docs"),
-                        ],
-                    )
+                    DslProperty(id="tags", argument="middleware"),
+                    DslProperty(id="!ards", argument="ards"),
+                    DslProperty(id="!docs", argument="docs"),
                 ]
             ),
             marks=pytest.mark.basic,
