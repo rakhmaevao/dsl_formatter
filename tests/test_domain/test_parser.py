@@ -111,26 +111,28 @@ from src.domain.module import DslModule, DslNode, DslProperty
             id="Many descriptors",
         ),
         pytest.param(
-            #             """
-            # var_name = descriptor param1 param2 {
-            #     comp_name = component some_component
-            #     other_name = component other_component
-            # }
-            # """,
-            """var_name = descriptor param1 param2
+            """
+            var_name = descriptor param1 param2
             other_name = component other_component
+            comp_name = component some_component
             """,
             DslModule(
                 body=[
                     DslNode(
                         id="var_name",
-                        descriptors=[
-                            "descriptor",
-                            "param1",
-                            "param2",
-                        ],
-                        children=[DslProperty(id="prop_id", argument="prop_value")],
-                    )
+                        descriptors=["descriptor", "param1", "param2"],
+                        children=[],
+                    ),
+                    DslNode(
+                        id="other_name",
+                        descriptors=["component", "other_component"],
+                        children=[],
+                    ),
+                    DslNode(
+                        id="comp_name",
+                        descriptors=["component", "some_component"],
+                        children=[],
+                    ),
                 ]
             ),
             marks=pytest.mark.basic,
