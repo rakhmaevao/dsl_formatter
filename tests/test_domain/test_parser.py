@@ -82,6 +82,34 @@ from src.domain.module import DslModule, DslNode, DslProperty
         ),
         pytest.param(
             """
+            filesystem = container filesystem {
+                tags middleware
+                blocks = container blocks {
+                some_component_id = component some_component
+            }
+            }
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="filesystem",
+                        descriptors=["container", "filesystem"],
+                        children=[
+                            DslProperty(id="tags", argument="middleware"),
+                            DslNode(
+                                id="blocks",
+                                descriptors=["container", "blocks"],
+                                children=[],
+                            ),
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many_instructions_in_node",
+        ),
+        pytest.param(
+            """
             blocks = container blocks {
                 some_component_id = component some_component
             }
