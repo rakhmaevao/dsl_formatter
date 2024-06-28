@@ -28,11 +28,11 @@ _descriptor_pe = Word(alphas + "_" + nums)
 
 
 ParserElement.set_default_whitespace_chars("")
-_children_pe = OneOrMore(Word(alphanums + "_" + " " + "=" + "\n" + "!"))
+_children_pe = OneOrMore(Word(alphanums + "_" + " " + "=" + "\n" + "!" + '"' + ","))
 ParserElement.set_default_whitespace_chars(" ")
 _property_pe = Group(
     Word(alphas + "!" + "_")("property_name")
-    + Word(alphas + nums + "_")("property_value")
+    + Word(alphas + nums + "_" + '"' + "," + " ")("property_value")
     + Suppress("\n")
 )("property")
 

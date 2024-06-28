@@ -109,7 +109,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
         pytest.param(
             """
             blocks = container blocks {
-                !tags middleware
+                !tags "Tag1, Tag2"
                 some_component_id = component some_component
             }
             """,
@@ -119,7 +119,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                         id="blocks",
                         descriptors=["container", "blocks"],
                         children=[
-                            DslProperty(id="!tags", argument="middleware"),
+                            DslProperty(id="!tags", argument='"Tag1, Tag2"'),
                             DslNode(
                                 id="some_component_id",
                                 descriptors=["component", "some_component"],
