@@ -37,29 +37,22 @@ class DslParser:
         return nodes
 
     def __parse_children(
-        self, raw_children: ParseResults
+        self, raw_str_children: ParseResults
     ) -> list[DslProperty | DslNode]:
-        raw_children = raw_children[0][0]
-        logger.info(f"Children: {raw_children}")
-        pp_result = c4_node_pe.parse_string(raw_children)
+        logger.info(f"Children: {raw_str_children}")
+        raw_str_children = self.__rebuild_str_children(raw_str_children)
+        pp_result = c4_node_pe.parse_string(raw_str_children)
         result = []
         for element in pp_result:
             result += self.__further_parse_one_layer(element)
         return result
-        # child_part = raw_children[0]
-        # st_children = " ".join(child_part)
-        # logger.info(f"Children: {child_part[0]}")
-        # children = []
 
-        # for child in child_part:
-        #     if isinstance(child, ParseResults):
-        #         if child.get_name() == "property":
-        #             children.append(
-        #                 DslProperty(
-        #                     id=child[0],
-        #                     argument=child[1],
-        #                 )
-        #             )
-        # if "entity_id" in child_part:
-        #     children += self.__further_parse_one_layer(child_part)
-        # return children
+    def __rebuild_str_children(self, raw_children: ParseResults) -> str:
+        raw_children = raw_children[0]
+        result = ""
+        for child in raw_children.as_list():
+            if isinstance(child, str):
+                result += child
+            if isinstance(child, list):
+                result += "{" + "\n".join(child) + "}"
+        return result

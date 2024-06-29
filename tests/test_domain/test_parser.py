@@ -236,6 +236,38 @@ from src.domain.module import DslModule, DslNode, DslProperty
             marks=pytest.mark.basic,
             id="Many_nodes_in_children",
         ),
+        pytest.param(
+            """
+            first = container first {
+                second = component second {
+                    third = component third 
+                }
+            }
+                    """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="first",
+                        descriptors=["container", "first"],
+                        children=[
+                            DslNode(
+                                id="second",
+                                descriptors=["component", "second"],
+                                children=[
+                                    DslNode(
+                                        id="third",
+                                        descriptors=["component", "third"],
+                                        children=[],
+                                    )
+                                ],
+                            )
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Many_nested",
+        ),
     ],
 )
 def test_parse_models(code, expected) -> None:

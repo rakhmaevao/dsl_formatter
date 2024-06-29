@@ -43,10 +43,10 @@ c4_node_pe = OneOrMore(
         + Group(
             _entity_id_pe("entity_id")
             + Suppress("=")
-            + Group(OneOrMore(_descriptor_pe, stop_on=(LineEnd() | "{")))(
+            + Group(OneOrMore(_descriptor_pe, stop_on=(LineEnd() ^ "{")))(
                 "entity_descriptors"
             )
-            + (
+            + Optional(
                 Suppress("\n")
                 | nested_expr(
                     "{",
