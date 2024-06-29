@@ -62,6 +62,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                 tags middleware
                 !ards ards
                 docs docs
+                url https://examp-le.com
             }
             """,
             DslModule(
@@ -73,6 +74,7 @@ from src.domain.module import DslModule, DslNode, DslProperty
                             DslProperty(id="tags", argument="middleware"),
                             DslProperty(id="!ards", argument="ards"),
                             DslProperty(id="docs", argument="docs"),
+                            DslProperty(id="url", argument="https://examp-le.com"),
                         ],
                     )
                 ]
