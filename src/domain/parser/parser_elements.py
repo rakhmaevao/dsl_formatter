@@ -24,7 +24,9 @@ from pyparsing import (
 
 _entity_id_pe = Word(alphas + "_")
 
-_descriptor_pe = Word(alphas + "_" + nums)
+_descriptor_pe = Word(alphas + "_" + nums) ^ (
+    Suppress('"') + Word(alphanums + "_" + " ") + Suppress('"')
+)
 
 
 ParserElement.set_default_whitespace_chars("")

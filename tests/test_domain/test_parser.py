@@ -270,6 +270,28 @@ from src.domain.module import DslModule, DslNode, DslProperty
             marks=pytest.mark.basic,
             id="Many_nested",
         ),
+        pytest.param(
+            """
+            blocks = container "blocks" {
+                !docs docs
+                tags "middleware"
+            }
+            """,
+            DslModule(
+                body=[
+                    DslNode(
+                        id="blocks",
+                        descriptors=["container", "blocks"],
+                        children=[
+                            DslProperty(id="!docs", argument="docs"),
+                            DslProperty(id="tags", argument='"middleware"'),
+                        ],
+                    )
+                ]
+            ),
+            marks=pytest.mark.basic,
+            id="Parameters_in_quotes",
+        ),
     ],
 )
 def test_parse_models(code, expected) -> None:
