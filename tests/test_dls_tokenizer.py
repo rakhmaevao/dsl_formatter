@@ -1,5 +1,5 @@
 import pytest
-from dsl_token import Token, Address
+from dsl_token import PreToken, Address
 from dsl_tokenizer import DslTokenizer
 
 
@@ -9,11 +9,11 @@ from dsl_tokenizer import DslTokenizer
         pytest.param(
             """filesystem = container filesystem""",
             [
-                Token(value="filesystem", address=Address(file_path="test", line=1)),
-                Token(value="=", address=Address(file_path="test", line=1)),
-                Token(value="container", address=Address(file_path="test", line=1)),
-                Token(value="filesystem", address=Address(file_path="test", line=1)),
-                Token(value="\n", address=Address(file_path="test", line=1)),
+                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
+                PreToken(value="=", address=Address(file_path="test", line=1)),
+                PreToken(value="container", address=Address(file_path="test", line=1)),
+                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
+                PreToken(value="\n", address=Address(file_path="test", line=1)),
             ],
             marks=pytest.mark.basic,
             id="Simple container",
@@ -23,17 +23,19 @@ from dsl_tokenizer import DslTokenizer
                 tags "Tag1, Tag2"
             }""",
             [
-                Token(value="filesystem", address=Address(file_path="test", line=1)),
-                Token(value="=", address=Address(file_path="test", line=1)),
-                Token(value="container", address=Address(file_path="test", line=1)),
-                Token(value="filesystem", address=Address(file_path="test", line=1)),
-                Token(value="{", address=Address(file_path="test", line=1)),
-                Token(value="\n", address=Address(file_path="test", line=1)),
-                Token(value="tags", address=Address(file_path="test", line=2)),
-                Token(value='"Tag1, Tag2"', address=Address(file_path="test", line=2)),
-                Token(value="\n", address=Address(file_path="test", line=2)),
-                Token(value="}", address=Address(file_path="test", line=3)),
-                Token(value="\n", address=Address(file_path="test", line=3)),
+                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
+                PreToken(value="=", address=Address(file_path="test", line=1)),
+                PreToken(value="container", address=Address(file_path="test", line=1)),
+                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
+                PreToken(value="{", address=Address(file_path="test", line=1)),
+                PreToken(value="\n", address=Address(file_path="test", line=1)),
+                PreToken(value="tags", address=Address(file_path="test", line=2)),
+                PreToken(
+                    value='"Tag1, Tag2"', address=Address(file_path="test", line=2)
+                ),
+                PreToken(value="\n", address=Address(file_path="test", line=2)),
+                PreToken(value="}", address=Address(file_path="test", line=3)),
+                PreToken(value="\n", address=Address(file_path="test", line=3)),
             ],
             id="Many tags",
         ),
@@ -42,12 +44,12 @@ from dsl_tokenizer import DslTokenizer
             # Comment
             // Comment""",
             [
-                Token(value="filesystem", address=Address(file_path="test", line=1)),
-                Token(value="\n", address=Address(file_path="test", line=1)),
-                Token(value="# Comment", address=Address(file_path="test", line=2)),
-                Token(value="\n", address=Address(file_path="test", line=2)),
-                Token(value="// Comment", address=Address(file_path="test", line=3)),
-                Token(value="\n", address=Address(file_path="test", line=3)),
+                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
+                PreToken(value="\n", address=Address(file_path="test", line=1)),
+                PreToken(value="# Comment", address=Address(file_path="test", line=2)),
+                PreToken(value="\n", address=Address(file_path="test", line=2)),
+                PreToken(value="// Comment", address=Address(file_path="test", line=3)),
+                PreToken(value="\n", address=Address(file_path="test", line=3)),
             ],
             id="Many tags",
         ),

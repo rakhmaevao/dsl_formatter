@@ -9,6 +9,6 @@ class Address:
 
 
 @dataclass(frozen=True)
-class Token:
+class PreToken:
     value: str
     address: Address

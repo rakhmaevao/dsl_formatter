@@ -1,20 +1,20 @@
-from dsl_token import Token, Address
+from dsl_token import PreToken, Address
 import re
 
 class DslTokenizer:
-    def tokenize(self, content: str, file_path: str) -> list[Token]:
+    def tokenize(self, content: str, file_path: str) -> list[PreToken]:
         lines = content.split("\n")
         result = []
         for line_i, line in enumerate(lines):
             if line.lstrip().startswith('//') or line.lstrip().startswith('#'):
                 result.append(
-                    Token(
+                    PreToken(
                         value=line.lstrip(),
                         address=Address(file_path=file_path, line=line_i + 1),
                     )
                 )
                 result.append(
-                    Token(
+                    PreToken(
                         value="\n",
                         address=Address(file_path=file_path, line=line_i + 1),
                     )
@@ -22,13 +22,13 @@ class DslTokenizer:
                 continue
             for token in self.__split_ignore_quotes(line):
                 result.append(
-                    Token(
+                    PreToken(
                         value=token,
                         address=Address(file_path=file_path, line=line_i + 1),
                     )
                 )
             result.append(
-                    Token(
+                    PreToken(
                         value="\n",
                         address=Address(file_path=file_path, line=line_i + 1),
                     )
