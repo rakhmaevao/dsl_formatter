@@ -1,5 +1,5 @@
 import pytest
-from dsl_token import PreToken, Address
+from dsl_token import Token, Address
 from dsl_tokenizer import DslTokenizer
 
 
@@ -9,11 +9,11 @@ from dsl_tokenizer import DslTokenizer
         pytest.param(
             """filesystem = container filesystem""",
             [
-                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
-                PreToken(value="=", address=Address(file_path="test", line=1)),
-                PreToken(value="container", address=Address(file_path="test", line=1)),
-                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
-                PreToken(value="\n", address=Address(file_path="test", line=1)),
+                Token(value="filesystem", address=Address(file_path="test", line=1)),
+                Token(value="=", address=Address(file_path="test", line=1)),
+                Token(value="container", address=Address(file_path="test", line=1)),
+                Token(value="filesystem", address=Address(file_path="test", line=1)),
+                Token(value="\n", address=Address(file_path="test", line=1)),
             ],
             marks=pytest.mark.basic,
             id="Simple container",
@@ -23,19 +23,17 @@ from dsl_tokenizer import DslTokenizer
                 tags "Tag1, Tag2"
             }""",
             [
-                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
-                PreToken(value="=", address=Address(file_path="test", line=1)),
-                PreToken(value="container", address=Address(file_path="test", line=1)),
-                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
-                PreToken(value="{", address=Address(file_path="test", line=1)),
-                PreToken(value="\n", address=Address(file_path="test", line=1)),
-                PreToken(value="tags", address=Address(file_path="test", line=2)),
-                PreToken(
-                    value='"Tag1, Tag2"', address=Address(file_path="test", line=2)
-                ),
-                PreToken(value="\n", address=Address(file_path="test", line=2)),
-                PreToken(value="}", address=Address(file_path="test", line=3)),
-                PreToken(value="\n", address=Address(file_path="test", line=3)),
+                Token(value="filesystem", address=Address(file_path="test", line=1)),
+                Token(value="=", address=Address(file_path="test", line=1)),
+                Token(value="container", address=Address(file_path="test", line=1)),
+                Token(value="filesystem", address=Address(file_path="test", line=1)),
+                Token(value="{", address=Address(file_path="test", line=1)),
+                Token(value="\n", address=Address(file_path="test", line=1)),
+                Token(value="tags", address=Address(file_path="test", line=2)),
+                Token(value='"Tag1, Tag2"', address=Address(file_path="test", line=2)),
+                Token(value="\n", address=Address(file_path="test", line=2)),
+                Token(value="}", address=Address(file_path="test", line=3)),
+                Token(value="\n", address=Address(file_path="test", line=3)),
             ],
             id="Many tags",
         ),
@@ -44,17 +42,37 @@ from dsl_tokenizer import DslTokenizer
             # Comment
             // Comment""",
             [
-                PreToken(value="filesystem", address=Address(file_path="test", line=1)),
-                PreToken(value="\n", address=Address(file_path="test", line=1)),
-                PreToken(value="# Comment", address=Address(file_path="test", line=2)),
-                PreToken(value="\n", address=Address(file_path="test", line=2)),
-                PreToken(value="// Comment", address=Address(file_path="test", line=3)),
-                PreToken(value="\n", address=Address(file_path="test", line=3)),
+                Token(value="filesystem", address=Address(file_path="test", line=1)),
+                Token(value="\n", address=Address(file_path="test", line=1)),
+                Token(value="# Comment", address=Address(file_path="test", line=2)),
+                Token(value="\n", address=Address(file_path="test", line=2)),
+                Token(value="// Comment", address=Address(file_path="test", line=3)),
+                Token(value="\n", address=Address(file_path="test", line=3)),
             ],
-            id="Many tags",
+            id="Comments",
+        ),
+        pytest.param(
+            """engee.blocks.block_repr_builder -> engee.blocks.mask_processor "Пересчитать маску" """,
+            [
+                Token(
+                    value="engee.blocks.block_repr_builder",
+                    address=Address(file_path="test", line=1),
+                ),
+                Token(value="->", address=Address(file_path="test", line=1)),
+                Token(
+                    value="engee.blocks.mask_processor",
+                    address=Address(file_path="test", line=1),
+                ),
+                Token(
+                    value='"Пересчитать маску"',
+                    address=Address(file_path="test", line=1),
+                ),
+                Token(value="\n", address=Address(file_path="test", line=1)),
+            ],
+            id="connections",
         ),
     ],
 )
 def test_basic(code, expected) -> None:
     tokenizer = DslTokenizer()
-    assert tokenizer.tokenize(code, "test") == expected
+    assert tokenizer.pre_tokenize(code, "test") == expected
