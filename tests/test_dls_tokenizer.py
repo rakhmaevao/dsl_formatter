@@ -76,3 +76,22 @@ from dsl_tokenizer import DslTokenizer
 def test_basic(code, expected) -> None:
     tokenizer = DslTokenizer()
     assert tokenizer.pre_tokenize(code, "test") == expected
+
+
+@pytest.mark.parametrize(
+    "code, expected",
+    [
+        pytest.param(
+            """engee.blocks.block_repr_builder -> engee.blocks.mask_processor "Пересчитать маску" """,
+            [],
+            id="connections",
+        ),
+    ],
+)
+def test_define_types(code, expected) -> None:
+    tokenizer = DslTokenizer()
+    tokens = tokenizer.pre_tokenize(
+        """engee.blocks.block_repr_builder -> engee.blocks.mask_processor "Пересчитать маску" """,
+        "test",
+    )
+    assert tokenizer.define_types(tokens) == []

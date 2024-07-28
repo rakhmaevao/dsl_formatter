@@ -1,4 +1,4 @@
-from dsl_token import Token, Address, Token
+from dsl_token import Token, Address, Token, TokenType
 import re
 
 class DslTokenizer:
@@ -35,11 +35,19 @@ class DslTokenizer:
                 )
         return result
     
-    def define_types(self, pre_tokens: list[Token]) -> list[Token]:
-        tokens = []
-        # for i, pre_token in enumerate(pre_tokens):
-        #     if pre_tokens[i + 1].value == "->":
-
+    def define_types(self, tokens: list[Token]) -> list[Token]:
+        for i in range(len(tokens)):
+            try:
+                if tokens[i + 1].value == "->":
+                    tokens[i].define_type(TokenType.DSL_CONNECTION_SRC)
+                    tokens[i + 1].define_type(TokenType.DSL_OPERATOR_ARROW)
+                    tokens[i + 2].define_type(TokenType.DSL_CONNECTION_DST)
+                    tokens[i + 3].define_type(TokenType.DSL_DESCRIPTION)
+                    tokens[i + 4].define_type(TokenType.DSL_TECHNOLOGY)
+                    tokens[i + 5].define_type(TokenType.DSL_TAGS)
+            except IndexError:
+                pass
+        return tokens
 
     @staticmethod
     def __split_ignore_quotes(input_string):
