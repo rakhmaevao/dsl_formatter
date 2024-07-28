@@ -10,6 +10,7 @@ python = "^3.12"
 pyparsing = "^3.1.2"
 loguru = "^0.7.2"
 requests = "^2.32.3"
+click = "^8.1.7"
 
 
 [tool.poetry.group.dev.dependencies]
