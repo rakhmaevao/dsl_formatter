@@ -1,6 +1,6 @@
 from abc import ABC
 from enum import Enum
-from src.dsl_file import DslFile
+from src.domain.dsl_file import DslFile
 
 
 class CheckProblemLevel(Enum):

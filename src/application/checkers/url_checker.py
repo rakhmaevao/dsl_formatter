@@ -1,13 +1,9 @@
-# URL-ы активные
-# URL-ы без якоря
-
-
 from dataclasses import dataclass
 import re
 
-from src.checkers import CheckProblemLevel, CheckResult, FullChecker
-from src.dsl_file import DslFile
-from src.interfaces.http_requester import HttpRequester
+from src.domain.checkers import CheckProblemLevel, CheckResult, FullChecker
+from src.domain.dsl_file import DslFile
+from src.application.interfaces.http_requester import HttpRequester
 
 
 class UrlCheckResult(CheckResult):

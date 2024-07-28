@@ -1,7 +1,7 @@
 from pathlib import Path
 import pytest
-from src.dsl_file import DslFile
-from src.url_checker.url_checker import UrlChecker
+from src.domain.dsl_file import DslFile
+from src.application.checkers.url_checker import UrlChecker
 from tests.fake.fake_http_requester import FakeHttpRequester
 
 

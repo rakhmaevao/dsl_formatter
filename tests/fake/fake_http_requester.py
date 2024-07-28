@@ -1,4 +1,4 @@
-from src.interfaces.http_requester import HttpRequester
+from src.application.interfaces.http_requester import HttpRequester
 
 
 class FakeHttpRequester(HttpRequester):
