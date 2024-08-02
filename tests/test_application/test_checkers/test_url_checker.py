@@ -20,7 +20,6 @@ from tests.fake.fake_http_requester import FakeHttpRequester
                         url https://good.com
                         tags "domain_layer"
                     }
-
                     # service layer
                     user_library_services = component "user library services" {
                         url https://other.com
@@ -30,7 +29,6 @@ from tests.fake.fake_http_requester import FakeHttpRequester
                         url https://bad.com
                         tags "service_layer"
                     }
-
                 }
                 """,
             ),
@@ -47,7 +45,7 @@ from tests.fake.fake_http_requester import FakeHttpRequester
                 Some text with [url](https://bad.com)
                 """,
             ),
-            ["test_file.md:4: ERROR U001: URL must be active"],
+            ["test_file.md:6: ERROR U001: URL must be active"],
         ),
     ],
 )

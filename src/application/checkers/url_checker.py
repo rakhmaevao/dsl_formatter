@@ -56,15 +56,17 @@ class UrlChecker(FullChecker):
         if isinstance(file, MdFile):
             for i, line in enumerate(file.body.splitlines()):
                 urls += [
-                    UrlWithAddressInFile(url=url, line_number=i + 1, file=file)
-                    for url in re.findall(r"\[(.*?)\]\((https?://[^\s()]+)\)", line)
+                    UrlWithAddressInFile(url=matching[1], line_number=i + 1, file=file)
+                    for matching in re.findall(
+                        r"\[(.*?)\]\((https?://[^\s()]+)\)", line
+                    )
                 ]
-        logger.info(f"rao --> {urls}")
         return urls
 
     def __check_active_url(
         self, url: UrlWithAddressInFile
     ) -> None | UrlIsNotActiveCheckResult:
+        logger.info(f"Checking {url.url} {self.__http_requester.ping(url.url)}")
         if self.__http_requester.ping(url.url):
             return None
         return UrlIsNotActiveCheckResult(url.url, url.file, url.line_number)
