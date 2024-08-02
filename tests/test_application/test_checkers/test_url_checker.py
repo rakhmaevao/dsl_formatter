@@ -1,6 +1,6 @@
 from pathlib import Path
 import pytest
-from src.domain.dsl_file import DslFile
+from src.domain.supported_file import DslFile, MdFile
 from src.application.checkers.url_checker import UrlChecker
 from tests.fake.fake_http_requester import FakeHttpRequester
 
@@ -10,7 +10,7 @@ from tests.fake.fake_http_requester import FakeHttpRequester
     [
         (
             DslFile(
-                path=Path("test_file"),
+                path=Path("test_file.dsl"),
                 body="""
                 blocks = container "blocks" {
                     !docs docs
@@ -34,7 +34,20 @@ from tests.fake.fake_http_requester import FakeHttpRequester
                 }
                 """,
             ),
-            ["test_file:17: ERROR U001: URL must be active"],
+            ["test_file.dsl:17: ERROR U001: URL must be active"],
+        ),
+        (
+            MdFile(
+                path=Path("test_file.md"),
+                body="""
+                Some test from markdown docs
+
+                [Some label](https://good.com)
+
+                Some text with [url](https://bad.com)
+                """,
+            ),
+            ["test_file.md:4: ERROR U001: URL must be active"],
         ),
     ],
 )

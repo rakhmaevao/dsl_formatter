@@ -1,6 +1,6 @@
 from abc import ABC
 from enum import Enum
-from src.domain.dsl_file import DslFile
+from src.domain.supported_file import SupportedFile
 
 
 class CheckProblemLevel(Enum):
@@ -13,7 +13,7 @@ class CheckResult:
     _REASON = "Unknown reason"
     _LEVEL = CheckProblemLevel.ERROR
 
-    def __init__(self, file: DslFile, line_number: int) -> None:
+    def __init__(self, file: SupportedFile, line_number: int) -> None:
         self._file = file
         self._line_number = line_number
 
@@ -22,5 +22,5 @@ class CheckResult:
 
 
 class FullChecker(ABC):
-    def __call__(self, dsl_file: DslFile) -> None:
+    def __call__(self, dsl_file: SupportedFile) -> None:
         raise NotImplementedError
